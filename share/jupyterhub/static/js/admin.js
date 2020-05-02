@@ -164,12 +164,23 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
     var row = getRow(el);
     var user = row.data("user");
     var admin = row.data("admin");
+    var mailAddress = row.data("mail-address");
     var dialog = $("#edit-user-dialog");
     dialog.data("user", user);
     dialog.find(".username-input").val(user);
+    dialog.find(".mail-address-input").val(mailAddress);
     dialog.find(".admin-checkbox").attr("checked", admin === "True");
     dialog.modal();
   });
+
+  $("#edit-user-dialog")
+    .find("#mail-address")
+    .change(function() {
+      var dialog = $("#edit-user-dialog");
+      var mailAddress = dialog.find("#mail-address").val();
+      var valid = mailAddress.match(/^\S+\@\S+$/) != null;
+      dialog.find(".save-button").prop("disabled", !valid);
+    });
 
   $("#edit-user-dialog")
     .find(".save-button")
@@ -178,11 +189,13 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
       var user = dialog.data("user");
       var name = dialog.find(".username-input").val();
       var admin = dialog.find(".admin-checkbox").prop("checked");
+      var mailAddress = dialog.find(".mail-address-input").val();
       api.edit_user(
         user,
         {
           admin: admin,
           name: name,
+          mail_address: mailAddress,
         },
         {
           success: function() {
