@@ -31,6 +31,7 @@ from sqlalchemy.orm import object_session
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import validates
 from sqlalchemy.pool import StaticPool
 from sqlalchemy.sql.expression import bindparam
 from sqlalchemy.types import LargeBinary
@@ -197,6 +198,13 @@ class User(Base):
     # Authenticators can store their state here:
     # Encryption is handled elsewhere
     encrypted_auth_state = Column(LargeBinary)
+
+    mail_address = Column(Unicode(320))
+
+    @validates('mail_address')
+    def validate_mail_address(self, key, mail_address):
+        assert '@' in mail_address
+        return mail_address
 
     def __repr__(self):
         return "<{cls}({name} {running}/{total} running)>".format(
