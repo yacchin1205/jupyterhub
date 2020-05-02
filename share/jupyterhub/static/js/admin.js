@@ -175,6 +175,12 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
 
   $("#edit-user-dialog")
     .find("#mail-address")
+    .keyup(function(){
+          $(this).change();
+      });
+
+  $("#edit-user-dialog")
+    .find("#mail-address")
     .change(function() {
       var dialog = $("#edit-user-dialog");
       var mailAddress = dialog.find("#mail-address").val();
@@ -312,4 +318,66 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
         servers: servers,
       });
     });
+
+  $(".mail-address-checkbox").change(function() {
+    var checkedCount = $(".mail-address-checkbox:checked").length;
+    if ($(".mail-address-checkbox").length - checkedCount == 0) {
+      $("#mail-address-check-all").removeClass("fa-square");
+      $("#mail-address-check-all").addClass("fa-check-square");
+    } else {
+      $("#mail-address-check-all").addClass("fa-square");
+      $("#mail-address-check-all").removeClass("fa-check-square");
+    }
+    $("#send-notification").attr("disabled", checkedCount == 0);
+  });
+
+  $("#mail-address-check-all").click(function() {
+    if ($("#mail-address-check-all").hasClass("fa-check-square")) {
+      $("#mail-address-check-all").addClass("fa-square");
+      $("#mail-address-check-all").removeClass("fa-check-square");
+      $(".mail-address-checkbox").prop("checked", false);
+      $("#send-notification").attr("disabled", true);
+    } else {
+      $("#mail-address-check-all").removeClass("fa-square");
+      $("#mail-address-check-all").addClass("fa-check-square");
+      $(".mail-address-checkbox").prop("checked", true);
+      $("#send-notification").attr("disabled", false);
+    }
+  });
+
+  $("#send-notification").click(function() {
+    var dialog = $("#send-notification-dialog");
+    dialog.find(".send-notification-button").prop("disabled", true);
+    dialog.find(".notification-title-input").val("");
+    dialog.find(".notification-body-input").val("");
+    dialog.modal();
+  });
+
+  $("#send-notification-dialog")
+    .find(".notification-input")
+    .keyup(function(){
+        $(this).change();
+    });
+
+  $("#send-notification-dialog")
+    .find(".notification-input")
+    .change(function() {
+      var dialog = $("#send-notification-dialog");
+      var title = dialog.find(".notification-title-input").val();
+      var body = dialog.find(".notification-body-input").val();
+      var valid = title.length > 0 && body.length > 0;
+      dialog.find(".send-notification-button").prop("disabled", !valid);
+    });
+
+  $(".send-notification-button").click(function() {
+    var to = [];
+    $(".mail-address-checkbox:checked").each(function(i, el) {
+      to.push(getRow($(el)).data("user"));
+    });
+    api.send_notification({
+      to: to,
+      title: $('.notification-title-input').val(),
+      body: $('.notification-body-input').val(),
+    });
+  });
 });

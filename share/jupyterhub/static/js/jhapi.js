@@ -156,5 +156,14 @@ define(["jquery", "utils"], function($, utils) {
     this.api_request("shutdown", options);
   };
 
+  JHAPI.prototype.send_notification = function(props, options) {
+    options = options || {};
+    options = update(options, { type: "PUT" });
+    if (props) {
+      options.data = JSON.stringify(props);
+    }
+    this.api_request(utils.url_path_join("notifications"), options);
+  };
+
   return JHAPI;
 });

@@ -34,7 +34,11 @@
       <tr class="user-row add-user-row">
         <td colspan="12">
           <a id="add-users" role="button" class="col-xs-2 btn btn-default">Add Users</a>
-          <span class="col-xs-offset-5 col-xs-3">
+          <span class="col-xs-offset-1 col-xs-2">
+            <i id="mail-address-check-all" class="fa fa-square"></i>
+            <button id="send-notification" class="btn btn-default" disabled>Notify</button>
+          </span>
+          <span class="col-xs-offset-2 col-xs-3">
             <a id="start-all-servers" role="button" class="btn btn-primary col-xs-5 col-xs-offset-1">Start All</a>
             <a id="stop-all-servers" role="button" class="btn btn-danger col-xs-5 col-xs-offset-1">Stop All</a>
           </span>
@@ -60,6 +64,7 @@
 
       <td class="mail-address-col col-sm-2">
         {%- if user.mail_address -%}
+          <input type="checkbox" class="mail-address-checkbox">
           {{ user.mail_address }}
         {%- else -%}
           -
@@ -175,6 +180,17 @@
 {{ user_modal('Edit User') }}
 
 {{ user_modal('Add Users', multi=True) }}
+
+{% call modal('Send Notification', btn_label='Send', btn_class='btn-primary send-notification-button') %}
+  <div>
+    <label for="notification-title">Title</label>
+    <input type="text" name="notification-title" id="notification-title" class="form-control notification-input notification-title-input"></input>
+  </div>
+  <div>
+    <label for="notification-body">Body</label>
+    <textarea name="notification-body" id="notification-body" class="form-control notification-input notification-body-input"></textarea>
+  </div>
+{% endcall %}
 
 {% endblock %}
 
