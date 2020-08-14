@@ -80,6 +80,13 @@ class SMTPNotifier(Notifier):
         """
     )
 
+    to_mail = Unicode(
+        config=True,
+        help="""
+        E-mail address for To field
+        """
+    )
+
     def _create_smtp(self):
         if self.ssl:
             return SMTP_SSL(host=self.host, port=self.port)
@@ -91,6 +98,7 @@ class SMTPNotifier(Notifier):
         msg = MIMEText(body, "plain", "utf-8")
         msg["Subject"] = Header(title, "utf-8")
         msg["From"] = Header(self.from_mail, "utf-8")
+        msg["To"] = Header(self.to_mail, "utf-8")
         to_mails = [u.mail_address for u in to]
         try:
             smtp.sendmail(self.from_mail, to_mails, msg.as_string())
