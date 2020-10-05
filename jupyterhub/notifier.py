@@ -3,11 +3,25 @@ from smtplib import SMTP, SMTP_SSL
 from email.mime.text import MIMEText
 from email.header import Header
 from traitlets.config import LoggingConfigurable
-from traitlets import Unicode, Integer, Bool
+from traitlets import Unicode, Integer, Bool, List
 
 
 class Notifier(LoggingConfigurable):
     """Base class for implementing a notifier for JupyterHub"""
+
+    templates = List(
+        config=True,
+        help="""
+        The templates of notification
+
+        The element should be dict like:
+        {
+          "name": "Template name", "title": "Template title",
+          "body": "Template body", "default": True
+        }
+        """,
+        default=[],
+    )
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

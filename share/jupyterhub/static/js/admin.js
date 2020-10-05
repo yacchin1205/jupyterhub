@@ -17,6 +17,8 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
 
   var api = new JHAPI(base_url);
 
+  var notification_templates = Object();
+
   function getRow(element) {
     var original = element;
     while (!element.hasClass("server-row")) {
@@ -347,6 +349,35 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
 
   $("#send-notification").click(function() {
     var dialog = $("#send-notification-dialog");
+    dialog.find(".notification-loading").show();
+    dialog.find(".notification-form").hide();
+    dialog.find(".notification-templates-control").hide();
+    api.get_notification_templates({
+      success: function(data) {
+        $(".notification-loading").hide();
+        var default_templates = data.templates.filter((t) => t.default);
+        if (default_templates.length > 0) {
+          if (default_templates[0].title !== null) {
+            dialog.find(".notification-title-input").val(default_templates[0].title);
+          }
+          dialog.find(".notification-body-input").val(default_templates[0].body);
+        }
+        if (data.templates && data.templates.length > 0) {
+          var template_items = $("#notification-template-items");
+          data.templates.forEach(function(template) {
+            notification_templates[template.name] = template;
+            template_items.append($("<option></option>").append(template.name));
+          })
+          if (default_templates.length > 0) {
+            template_items.val(default_templates[0].name);
+          }
+          dialog.find(".notification-templates-button").attr("disabled", false);
+        } else {
+          dialog.find(".notification-templates-button").attr("disabled", true);
+        }
+        $(".notification-form").show();
+      },
+    });
     dialog.find(".send-notification-button").prop("disabled", true);
     dialog.find(".notification-title-input").val("");
     dialog.find(".notification-body-input").val("");
@@ -358,6 +389,38 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
     .keyup(function(){
         $(this).change();
     });
+
+  $(".notification-templates-button").click(function() {
+    if ($(this).attr("dropdown") == "collapse") {
+      $("i.notification-caret").removeClass("fa-caret-right");
+      $("i.notification-caret").addClass("fa-caret-down");
+      $(this).attr("dropdown", "expand");
+      $(".notification-templates-control").show();
+    } else {
+      $("i.notification-caret").addClass("fa-caret-right");
+      $("i.notification-caret").removeClass("fa-caret-down");
+      $(this).attr("dropdown", "collapse");
+      $(".notification-templates-control").hide();
+    }
+  });
+
+  $("#notification-template-insert").click(function() {
+    var template = notification_templates[$("#notification-template-items").val()];
+    var text = $(".notification-body-input");
+    var v = text.val();
+    var textBefore = v.substring(0, text.prop('selectionStart'));
+    var textAfter  = v.substring(text.prop('selectionEnd'), v.length);
+
+    text.val(textBefore + template.body + textAfter);
+  });
+
+  $("#notification-template-reset").click(function() {
+    var template = notification_templates[$("#notification-template-items").val()];
+    $(".notification-body-input").val(template.body);
+    if (template.title !== null) {
+      $(".notification-title-input").val(template.title);
+    }
+  });
 
   $("#send-notification-dialog")
     .find(".notification-input")

@@ -47,6 +47,30 @@ class NotificationsHandler(APIHandler):
         self.finish(json.dumps({"message": "Sent"}))
 
 
+class TemplatesHandler(APIHandler):
+    @admin_only
+    async def get(self):
+        """GET /api/notifications/templates get templates for notifications
+        """
+        templates = [self.normalize(t) for t in self.app.notifier.templates]
+
+        self.set_status(200)
+        self.finish(json.dumps({"templates": templates}))
+
+    def normalize(self, t):
+        normalized = {"name": t["name"], "default": False, "title": None,
+                      "body": ""}
+        for k, v in t.items():
+            if k == "default":
+                normalized[k] = bool(v)
+            elif k == "title" or k == "body" or k == "name":
+                normalized[k] = str(v) if v is not None else None
+            else:
+                raise KeyError(k)
+        return normalized
+
+
 default_handlers = [
     (r"/api/notifications", NotificationsHandler),
+    (r"/api/notifications/templates", TemplatesHandler)
 ]
