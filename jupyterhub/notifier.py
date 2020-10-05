@@ -16,7 +16,7 @@ class Notifier(LoggingConfigurable):
 
         The element should be dict like:
         {
-          "name": "Template name", "title": "Template title",
+          "name": "Template name", "subject": "Template subject",
           "body": "Template body", "default": True
         }
         """,

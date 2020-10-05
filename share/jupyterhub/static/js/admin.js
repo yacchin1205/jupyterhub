@@ -351,14 +351,13 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
     var dialog = $("#send-notification-dialog");
     dialog.find(".notification-loading").show();
     dialog.find(".notification-form").hide();
-    dialog.find(".notification-templates-control").hide();
     api.get_notification_templates({
       success: function(data) {
         $(".notification-loading").hide();
         var default_templates = data.templates.filter((t) => t.default);
         if (default_templates.length > 0) {
-          if (default_templates[0].title !== null) {
-            dialog.find(".notification-title-input").val(default_templates[0].title);
+          if (default_templates[0].subject !== null) {
+            dialog.find(".notification-title-input").val(default_templates[0].subject);
           }
           dialog.find(".notification-body-input").val(default_templates[0].body);
         }
@@ -390,20 +389,6 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
         $(this).change();
     });
 
-  $(".notification-templates-button").click(function() {
-    if ($(this).attr("dropdown") == "collapse") {
-      $("i.notification-caret").removeClass("fa-caret-right");
-      $("i.notification-caret").addClass("fa-caret-down");
-      $(this).attr("dropdown", "expand");
-      $(".notification-templates-control").show();
-    } else {
-      $("i.notification-caret").addClass("fa-caret-right");
-      $("i.notification-caret").removeClass("fa-caret-down");
-      $(this).attr("dropdown", "collapse");
-      $(".notification-templates-control").hide();
-    }
-  });
-
   $("#notification-template-insert").click(function() {
     var template = notification_templates[$("#notification-template-items").val()];
     var text = $(".notification-body-input");
@@ -417,8 +402,8 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
   $("#notification-template-reset").click(function() {
     var template = notification_templates[$("#notification-template-items").val()];
     $(".notification-body-input").val(template.body);
-    if (template.title !== null) {
-      $(".notification-title-input").val(template.title);
+    if (template.subject !== null) {
+      $(".notification-title-input").val(template.subject);
     }
   });
 

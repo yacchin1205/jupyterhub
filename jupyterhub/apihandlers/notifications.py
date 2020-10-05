@@ -58,12 +58,12 @@ class TemplatesHandler(APIHandler):
         self.finish(json.dumps({"templates": templates}))
 
     def normalize(self, t):
-        normalized = {"name": t["name"], "default": False, "title": None,
+        normalized = {"name": t["name"], "default": False, "subject": None,
                       "body": ""}
         for k, v in t.items():
             if k == "default":
                 normalized[k] = bool(v)
-            elif k == "title" or k == "body" or k == "name":
+            elif k == "subject" or k == "body" or k == "name":
                 normalized[k] = str(v) if v is not None else None
             else:
                 raise KeyError(k)

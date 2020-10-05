@@ -189,21 +189,18 @@
     Loading...
   </div>
   <div class="notification-form">
+    <div class="notification-templates">
+      Template: <select id="notification-template-items"></select>
+      <button class="btn btn-default btn-xs" id="notification-template-reset">Set</button>
+      <button class="btn btn-default btn-xs" id="notification-template-insert">Insert to body</button>
+    </div>
     <div>
-      <label for="notification-title">Title</label>
+      <label for="notification-title">Subject</label>
       <input type="text" name="notification-title" id="notification-title" class="form-control notification-input notification-title-input"></input>
     </div>
     <div>
       <label for="notification-body">Body</label>
       <textarea name="notification-body" id="notification-body" class="form-control notification-input notification-body-input" rows="10"></textarea>
-    </div>
-    <div class="notification-templates">
-      <button class="btn btn-default btn-xs notification-templates-button" dropdown="collapse"><i class="notification-caret fa fa-caret-right"></i> Templates</button>
-      <div class="notification-templates-control">
-        Template: <select id="notification-template-items"></select>
-        <button class="btn btn-default btn-xs" id="notification-template-insert">Insert to body</button>
-        <button class="btn btn-default btn-xs" id="notification-template-reset">Reset title & body</button>
-      </div>
     </div>
   </div>
 {% endcall %}
