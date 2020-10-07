@@ -370,9 +370,9 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
           if (default_templates.length > 0) {
             template_items.val(default_templates[0].name);
           }
-          dialog.find(".notification-templates-button").attr("disabled", false);
+          dialog.find(".notification-templates").show();
         } else {
-          dialog.find(".notification-templates-button").attr("disabled", true);
+          dialog.find(".notification-templates").hide();
         }
         $(".notification-form").show();
       },
