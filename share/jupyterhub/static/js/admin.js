@@ -363,6 +363,7 @@ require(["jquery", "bootstrap", "moment", "jhapi", "utils"], function(
         }
         if (data.templates && data.templates.length > 0) {
           var template_items = $("#notification-template-items");
+          template_items.empty();
           data.templates.forEach(function(template) {
             notification_templates[template.name] = template;
             template_items.append($("<option></option>").append(template.name));
