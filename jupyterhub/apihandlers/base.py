@@ -195,6 +195,7 @@ class APIHandler(BaseHandler):
             'pending': None,
             'created': isoformat(user.created),
             'last_activity': isoformat(user.last_activity),
+            'mail_address': user.mail_address,
         }
         if '' in user.spawners:
             model['pending'] = user.spawners[''].pending
@@ -223,7 +224,13 @@ class APIHandler(BaseHandler):
         """Get the JSON model for a Service object"""
         return {'kind': 'service', 'name': service.name, 'admin': service.admin}
 
-    _user_model_types = {'name': str, 'admin': bool, 'groups': list, 'auth_state': dict}
+    _user_model_types = {
+        'name': str,
+        'admin': bool,
+        'groups': list,
+        'auth_state': dict,
+        'mail_address': str,
+    }
 
     _group_model_types = {'name': str, 'users': list}
 
