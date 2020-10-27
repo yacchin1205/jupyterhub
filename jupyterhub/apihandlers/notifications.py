@@ -58,8 +58,7 @@ class TemplatesHandler(APIHandler):
         self.finish(json.dumps({"templates": templates}))
 
     def normalize(self, t):
-        normalized = {"name": t["name"], "default": False, "subject": None,
-                      "body": ""}
+        normalized = {"name": t["name"], "default": False, "subject": None, "body": ""}
         for k, v in t.items():
             if k == "default":
                 normalized[k] = bool(v)
@@ -72,5 +71,5 @@ class TemplatesHandler(APIHandler):
 
 default_handlers = [
     (r"/api/notifications", NotificationsHandler),
-    (r"/api/notifications/templates", TemplatesHandler)
+    (r"/api/notifications/templates", TemplatesHandler),
 ]

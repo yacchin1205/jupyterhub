@@ -1,9 +1,14 @@
 """Base Notifier class"""
-from smtplib import SMTP, SMTP_SSL
-from email.mime.text import MIMEText
 from email.header import Header
+from email.mime.text import MIMEText
+from smtplib import SMTP
+from smtplib import SMTP_SSL
+
+from traitlets import Bool
+from traitlets import Integer
+from traitlets import List
+from traitlets import Unicode
 from traitlets.config import LoggingConfigurable
-from traitlets import Unicode, Integer, Bool, List
 
 
 class Notifier(LoggingConfigurable):
@@ -76,7 +81,7 @@ class SMTPNotifier(Notifier):
         help="""
         The port of SMTP server
         """,
-        default=0
+        default=0,
     )
 
     ssl = Bool(
@@ -84,21 +89,21 @@ class SMTPNotifier(Notifier):
         help="""
         Use SSL
         """,
-        default=False
+        default=False,
     )
 
     from_mail = Unicode(
         config=True,
         help="""
         E-mail address for From field
-        """
+        """,
     )
 
     to_mail = Unicode(
         config=True,
         help="""
         E-mail address for To field
-        """
+        """,
     )
 
     def _create_smtp(self):
