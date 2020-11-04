@@ -95,6 +95,7 @@ from .auth import Authenticator, PAMAuthenticator
 from .crypto import CryptKeeper
 from .spawner import Spawner, LocalProcessSpawner
 from .objects import Hub, Server
+from .notifier import Notifier, DummyNotifier
 
 # For faking stats
 from .emptyclass import EmptyClass
@@ -1330,6 +1331,33 @@ class JupyterHub(Application):
             self.log.error("%s cannot create files in %s", user, parent)
         if os.path.exists(path) and not os.access(path, os.W_OK):
             self.log.error("%s cannot edit %s", user, path)
+
+    notifier_class = EntryPointType(
+        default_value=DummyNotifier,
+        klass=Notifier,
+        entry_point_group="jupyterhub.notifiers",
+        help="""Class to notify messages.
+
+        This should be a subclass of :class:`jupyterhub.notifier.Notifier`
+
+        with an :meth:`send` method that:
+
+        - is a coroutine (asyncio or tornado)
+        - takes four arguments: (handler, to, title, body),
+          where `handler` is the calling web.RequestHandler,
+          and `to`, `title`, `body` are the details of notification.
+
+        .. versionchanged:: 1.0
+            notifiers may be registered via entry points,
+            e.g. `c.JupyterHub.notifier_class = 'sendgrid'`
+        """,
+    ).tag(config=True)
+
+    notifier = Instance(Notifier)
+
+    @default('notifier')
+    def _notifier_default(self):
+        return self.notifier_class(parent=self)
 
     def init_secrets(self):
         trait_name = 'cookie_secret'

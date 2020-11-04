@@ -402,7 +402,7 @@ class AdminHandler(BaseHandler):
     @web.authenticated
     @admin_only
     async def get(self):
-        available = {'name', 'admin', 'running', 'last_activity'}
+        available = {'name', 'admin', 'running', 'mail_address', 'last_activity'}
         default_sort = ['admin', 'name']
         mapping = {'running': orm.Spawner.server_id}
         for name in available:
@@ -411,6 +411,7 @@ class AdminHandler(BaseHandler):
 
         default_order = {
             'name': 'asc',
+            'mail_address': 'desc',
             'last_activity': 'desc',
             'admin': 'desc',
             'running': 'desc',
