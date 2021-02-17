@@ -1684,6 +1684,41 @@ async def test_options(app):
     r = await api_request(app, 'users', method='options')
     r.raise_for_status()
     assert 'Access-Control-Allow-Headers' in r.headers
+    assert 'Access-Control-Allow-Origin' not in r.headers
+
+
+async def test_options_allowed_hosts(app):
+    app.allowed_hosts.append('some.host')
+    r = await api_request(app, 'users', method='options', headers={
+        'Origin': 'some.host'
+    })
+    r.raise_for_status()
+    assert 'Access-Control-Allow-Headers' in r.headers
+    assert 'Access-Control-Allow-Origin' in r.headers
+    assert r.headers['Access-Control-Allow-Origin'] == 'some.host'
+
+    r = await api_request(app, 'users', method='options', headers={
+        'Origin': 'some.host:8080'
+    })
+    r.raise_for_status()
+    assert 'Access-Control-Allow-Headers' in r.headers
+    assert 'Access-Control-Allow-Origin' in r.headers
+    assert r.headers['Access-Control-Allow-Origin'] == 'some.host:8080'
+
+    r = await api_request(app, 'users', method='options', headers={
+        'Origin': 'another.host'
+    })
+    r.raise_for_status()
+    assert 'Access-Control-Allow-Headers' in r.headers
+    assert 'Access-Control-Allow-Origin' not in r.headers
+
+    app.allowed_hosts.remove('some.host')
+    r = await api_request(app, 'users', method='options', headers={
+        'Origin': 'some.host'
+    })
+    r.raise_for_status()
+    assert 'Access-Control-Allow-Headers' in r.headers
+    assert 'Access-Control-Allow-Origin' not in r.headers
 
 
 async def test_bad_json_body(app):
