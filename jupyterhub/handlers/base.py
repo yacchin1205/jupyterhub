@@ -229,7 +229,9 @@ class BaseHandler(RequestHandler):
         origin = self.request.headers.get('Origin', None)
         if origin is None:
             return False
-        domain = origin.split(':')[0] if ':' in origin else origin
+        domain = urlparse(origin).netloc
+        if ':' in domain:
+            domain = domain.split(':')[0]
         return domain in allowed_hosts
 
     # ---------------------------------------------------------------
