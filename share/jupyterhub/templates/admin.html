@@ -22,7 +22,7 @@
     <thead>
       <tr>
         {% block thead %}
-        {{ th("User (%i)" % users|length, 'name') }}
+        {{ th("User", 'name') }}
         {{ th("Admin", 'admin') }}
         {{ th("Mail Address", 'mail_address') }}
         {{ th("Last Activity", 'last_activity') }}
@@ -117,12 +117,19 @@
       {% endfor %}
       {% endfor %}
   </tbody>
+  <tfoot>
+    <tr class="pagination-row">
+    <td colspan="3">
+      {% if pagination.links %}
+      <div class="pagination menu">{{ pagination.links|safe }}</div>
+      {% endif %}
+    </td>
+    <td colspan="2" class="pagination-page-info">
+    Displaying users {{ pagination.info.start|safe }} - {{ pagination.info.end|safe }} of {{ pagination.info.total|safe }}
+    </td>
+  </tr>
+  </tfoot>
   </table>
-</div>
-<div class="container-fluid navbar-default small version_footer">
-  <div class="navbar-text">
-    JupyterHub {{ server_version }}
-  </div>
 </div>
 
 {% call modal('Delete User', btn_class='btn-danger delete-button') %}
@@ -205,6 +212,14 @@
   </div>
 {% endcall %}
 
+{% endblock %}
+
+{% block footer %}
+<div class="container-fluid navbar-default small version_footer">
+  <div class="navbar-text">
+    JupyterHub {{ server_version }}
+  </div>
+</div>
 {% endblock %}
 
 {% block script %}
